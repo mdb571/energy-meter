@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Smart Energy Meter</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="title-box">
+        <h1 class="title">Energy Meter</h1>
+    </div>
+
+    <div class="info">
+        <div class="info-header">
+            <span>Live Data</span>
+        </div>
+        <div class="sub-info">
+            <div class="inline">
+                <div class="sub-info-header info-header">
+                    <span>Units:</span>
+                </div>
+                <div class="unit-count count" id="units">
+                </div>
+            </div>
+
+            <div class="inline">
+                <div class="sub-info-header info-header">
+                    <span>Balance:</span>
+                </div>
+                <div class="balance-count count" id="balance">
+                </div>
+            </div>
+        </div>
+
+        <div class="search">
+            <input type="text" style="width: 30%; height: 33px;" id="phone" placeholder="Phone">
+            <input type="text" style="width: 30%; height: 33px;" id="amount" placeholder="Amount"> 
+            <button type="button" id="recharge" class="btn btn-lg btn-primary">Recharge</button>
+            <p><span id='display'></span></p>       
+        </div>
+       
+    </div>
+    
+{% endblock %}

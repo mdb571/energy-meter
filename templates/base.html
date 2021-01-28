@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <div class="main-card">
+
+    {% block body %}
+    {% endblock %}
+
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+        const url1 ="https://api.thingspeak.com/channels/1245937/feeds.json?api_key=Y5WZMG2RR4P8Q075&results=1";
+        const url2 ="https://api.thingspeak.com/channels/1282723/feeds.json?api_key=5Y6K7LXLGQLHU7AG&results=1";
+        function LiveUpdate(){
+            const count = document.getElementById('balance');
+            const units = document.getElementById('units');
+            const msg=document.getElementById('message');
+            let headers = new Headers();
+
+            headers.append('Content-Type', 'application/json');
+            headers.append('Accept', 'application/json');
+
+            headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+            headers.append('Access-Control-Allow-Credentials', 'true');
+
+            setInterval(function(){
+                fetch(url1)
+                .then((resp) => resp.json())
+                .then(function(data){
+                    units.textContent=data.feeds[0].field6;
+                    
+                    console.log(units.textContent)
+                   
+
+                }).catch(function (error){
+                    console.log(error);
+                })
+                
+
+            },3500);
+            setInterval(function(){
+                fetch(url2)
+                .then((resp) => resp.json())
+                .then(function(data){
+                    count.textContent=data.feeds[0].field1;
+                    console.log(count.textContent)
+                    if (Number(count.textContent)<15){
+                        console.log("Low Balance");
+                    }
+            
+                }).catch(function (error){
+                    console.log(error);
+                })
+
+            },3500);
+        }
+        LiveUpdate();
+        $(document).ready(function() {
+           $('#recharge').click(function(){
+               var phone = $('#phone').val();
+               var amount = $('#amount').val();
+               var rupees = document.getElementById('balance').textContent;
+               $.ajax({
+               url: "/recharge",
+               type: "get",
+               data: {amount: amount,rupees:rupees,phone:phone},
+               success: function(response) {
+               $("#display").html(response.html);
+               console.log("Recharge Succesful");
+               alert('Recharge Succesful');
+               $('#phone').val('');
+               $('#amount').val('');
+              
+              },
+              error: function(xhr) {
+              
+             }
+             });
+           });
+        });
+      </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
